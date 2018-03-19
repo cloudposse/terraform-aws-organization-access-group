@@ -1,6 +1,6 @@
 # terraform-aws-organization-access-group [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-organization-access-group.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-organization-access-group)
 
-Terraform module to create an IAM role to grant permissions to delegated IAM users in the master account to an invited member account
+Terraform module to create an IAM Group and Policy to grant permissions to delegated IAM users in the Organization's master account to access a member account
 
 https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html
 
@@ -9,13 +9,34 @@ https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_
 
 By default, when you create a member account as part of your Organization, AWS automatically creates `OrganizationAccountAccessRole` in the member account.
 
-The role grants admin permissions to the member account to delegated IAM users in the master account.
+The role grants admin permissions to access the member account to delegated IAM users in the master account.
 
-However, member accounts that you invite to join your Organization do not automatically get the role created.
+In the master account you need to create a Policy to grant permissions to the IAM users to assume `OrganizationAccountAccessRole` in the member account.
 
-This module creates `OrganizationAccountAccessRole` role in an invited member account.
+This module does the following:
 
-AWS recommends using the same name, `OrganizationAccountAccessRole`, for the created role for consistency and ease of remembering.
+1. Creates an IAM Group with the specified name
+2. Adds the provided IAM users to the Group
+3. Creates a Policy to grant permissions to the IAM users in the master account to assume `OrganizationAccountAccessRole` in the member account
+4. Attaches the Policy to the Group
+
+
+Users who are members of the Group will be able to assume the role and administer the member account by going here:
+
+(change `XXXXXXXXXXXX` to the ID of the member account)
+
+```
+https://signin.aws.amazon.com/switchrole
+                ?account=XXXXXXXXXXXX
+                &roleName=OrganizationAccountAccessRole
+                &displayName=Dev
+```
+
+
+<br/>
+
+__NOTE__: Member accounts that you invite to join your Organization (that are not part of your Organization) do not automatically get `OrganizationAccountAccessRole` created.
+You can use [terraform-aws-organization-access-role](https://github.com/cloudposse/terraform-aws-organization-access-role) module to create `OrganizationAccountAccessRole` role in an invited member account.
 
 <br/>
 
@@ -23,67 +44,37 @@ AWS recommends using the same name, `OrganizationAccountAccessRole`, for the cre
 ## Usage
 
 ```hcl
-module "organization_access_role" {
+module "organization_access_group" {
   source            = "git::https://github.com/cloudposse/terraform-aws-organization-access-group.git?ref=master"
-  master_account_id = "XXXXXXXXXXXX"
+  group_name        = "OrganizationGroup"
+  user_names        = ["User1","User2"]
+  member_account_id = "XXXXXXXXXXXX"
   role_name         = "OrganizationAccountAccessRole"
-  policy_arn        = "arn:aws:iam::aws:policy/AdministratorAccess"
-```
-
-
-After the role has been created in the invited member account, login to the master account and create the following policy:
-
-(change `YYYYYYYYYYYY` to the ID of the invited member account)
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Action": [
-                "sts:AssumeRole"
-            ],
-            "Resource": [
-                "arn:aws:iam::YYYYYYYYYYYY:role/OrganizationAccountAccessRole"
-            ]
-        }
-    ]
-}
-```
-
-
-Then attach the policy to a master account Group that you want to delegate administration of the invited member account.
-
-After that, users who are members of the Group in the master account will be able to assume the role and administer the invited member account by going here:
-
-(change `YYYYYYYYYYYY` to the ID of the invited member account)
-
-```
-https://signin.aws.amazon.com/switchrole
-                ?account=YYYYYYYYYYYY
-                &roleName=OrganizationAccountAccessRole
-                &displayName=Dev
+  policy_name       = "OrganizationAccountAccessPolicy"
 ```
 
 
 ## Variables
 
-|  Name                   |  Default                          |  Description                                                                                       | Required |
-|:------------------------|:----------------------------------|:---------------------------------------------------------------------------------------------------|:--------:|
-| `master_account_id`     | ``                                | The ID of the master account to grant permissions to access the current account                    | Yes      |
-| `role_name`             | `OrganizationAccountAccessRole`   | The name of the role to grant permissions to delegated IAM users in the master account to the current account   | No      |
-| `policy_arn`            | `arn:aws:iam::aws:policy/AdministratorAccess`  | Policy ARN to attach to the role. By default it attaches `AdministratorAccess` managed policy to grant full access to AWS services and resources in the current account   | No      |
+|  Name                 |  Default                          |  Description                                                                             | Required |
+|:----------------------|:----------------------------------|:-----------------------------------------------------------------------------------------|:--------:|
+| `group_name`          | ``                                | The name of the Group                                                                    | Yes      |
+| `user_names`          | ``                                | A list of IAM User names to associate with the Group                                     | Yes      |
+| `member_account_id`   | ``                                | The ID of the member account to grant access permissions to the users in the Group       | Yes      |
+| `role_name`           | `OrganizationAccountAccessRole`   | The name of the role in the member account to grant permissions to delegated IAM users   | No       |
+| `policy_name`         | `OrganizationAccountAccessPolicy` | The name of the policy to attach to the Group                                            | No       |
 
 
 ## Outputs
 
-| Name                | Description                                         |
-|:--------------------|:----------------------------------------------------|
-| `role_name`         | The name of the crated role                         |
-| `role_id`           | The stable and unique string identifying the role   |
-| `role_arn`          | The Amazon Resource Name (ARN) specifying the role  |
+| Name                | Description                            |
+|:--------------------|:---------------------------------------|
+| `group_name`        | The Group's name                       |
+| `group_id`          | The Group's ID                         |
+| `group_unique_id`   | Group's unique ID assigned by AWS      |
+| `group_arn`         | The ARN assigned by AWS for the Group  |
+| `policy_name`       | The name of the policy                 |
+| `policy_id`         | The policy ID                          |
 
 
 

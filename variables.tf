@@ -16,11 +16,11 @@ variable "member_account_id" {
 variable "role_name" {
   type        = "string"
   default     = "OrganizationAccountAccessRole"
-  description = "The name of the role to grant permissions to delegated IAM users in the master account"
+  description = "The name of the role in the member account to grant permissions to delegated IAM users"
 }
 
 variable "policy_name" {
   type        = "string"
-  default     = "OrganizationAccountAccessPolicy "
+  default     = "OrganizationAccountAccessPolicy"
   description = "The name of the policy to attach to the Group"
 }
