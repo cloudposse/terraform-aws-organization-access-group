@@ -51,6 +51,7 @@ module "organization_access_group" {
   member_account_id = "XXXXXXXXXXXX"
   role_name         = "OrganizationAccountAccessRole"
   policy_name       = "OrganizationAccountAccessPolicy"
+}
 ```
 
 
