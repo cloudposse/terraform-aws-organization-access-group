@@ -11,11 +11,11 @@ By default, when you create a member account as part of your Organization, AWS a
 
 The role grants admin permissions to access the member account to delegated IAM users in the master account.
 
-In the master account you need to create a Policy to grant permissions to the IAM users to assume `OrganizationAccountAccessRole` in the member account.
+In the master account you need to create a Policy to grant permissions to IAM users to assume `OrganizationAccountAccessRole` in the member account.
 
 This module does the following:
 
-1. Creates an IAM Group with the specified name
+1. Creates an IAM Group
 2. Adds the provided IAM users to the Group
 3. Creates a Policy to grant permissions to the IAM users in the master account to assume `OrganizationAccountAccessRole` in the member account
 4. Attaches the Policy to the Group
@@ -46,11 +46,11 @@ You can use [terraform-aws-organization-access-role](https://github.com/cloudpos
 ```hcl
 module "organization_access_group" {
   source            = "git::https://github.com/cloudposse/terraform-aws-organization-access-group.git?ref=master"
-  group_name        = "OrganizationGroup"
+  namespace         = "cp"
+  stage             = "dev"
+  name              = "cluster"
   user_names        = ["User1","User2"]
-  member_account_id = "XXXXXXXXXXXX"
-  role_name         = "OrganizationAccountAccessRole"
-  policy_name       = "OrganizationAccountAccessPolicy"
+  member_account_id = "XXXXXXXXXXXXXX"
 }
 ```
 
@@ -59,11 +59,15 @@ module "organization_access_group" {
 
 |  Name                 |  Default                          |  Description                                                                             | Required |
 |:----------------------|:----------------------------------|:-----------------------------------------------------------------------------------------|:--------:|
-| `group_name`          | ``                                | The name of the Group                                                                    | Yes      |
+| `namespace`           | ``                                | Namespace (_e.g._ `cp` or `cloudposse`)                                                  | Yes      |
+| `stage`               | ``                                | Stage (_e.g._ `prod`, `dev`, `staging`)                                                  | Yes      |
+| `name`                | ``                                | Name  (_e.g._ `app` or `cluster`)                                                        | Yes      |
 | `user_names`          | ``                                | A list of IAM User names to associate with the Group                                     | Yes      |
 | `member_account_id`   | ``                                | The ID of the member account to grant access permissions to the users in the Group       | Yes      |
-| `role_name`           | `OrganizationAccountAccessRole`   | The name of the role in the member account to grant permissions to delegated IAM users   | No       |
-| `policy_name`         | `OrganizationAccountAccessPolicy` | The name of the policy to attach to the Group                                            | No       |
+| `role_name`           | `OrganizationAccountAccessRole`   | The name of the Role in the member account to grant permissions to the users in the Group   | No       |
+| `attributes`          | `[]`                              | Additional attributes (_e.g._ `policy` or `role`)                                        | No       |
+| `tags`                | `{}`                              | Additional tags  (_e.g._ `map("BusinessUnit","XYZ")`                                     | No       |
+| `delimiter`           | `-`                               | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes`              | No       |
 
 
 ## Outputs
