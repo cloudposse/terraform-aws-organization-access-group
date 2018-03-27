@@ -10,12 +10,12 @@ module "label" {
 
 # https://www.terraform.io/docs/providers/aws/r/iam_group.html
 resource "aws_iam_group" "default" {
-  name = "${module.label.id}${var.delimiter}group"
+  name = "${module.label.id}"
 }
 
 # https://www.terraform.io/docs/providers/aws/r/iam_group_membership.html
 resource "aws_iam_group_membership" "default" {
-  name  = "${module.label.id}${var.delimiter}group${var.delimiter}membership"
+  name  = "${module.label.id}"
   group = "${aws_iam_group.default.id}"
   users = ["${var.user_names}"]
 }
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "default" {
 
 # https://www.terraform.io/docs/providers/aws/r/iam_group_policy.html
 resource "aws_iam_group_policy" "default" {
-  name   = "${module.label.id}${var.delimiter}group${var.delimiter}policy"
+  name   = "${module.label.id}"
   group  = "${aws_iam_group.default.id}"
   policy = "${data.aws_iam_policy_document.default.json}"
 }
