@@ -51,6 +51,7 @@ module "organization_access_group" {
   name              = "cluster"
   user_names        = ["User1","User2"]
   member_account_id = "XXXXXXXXXXXXXX"
+  require_mfa       = "true"
 }
 ```
 
@@ -65,9 +66,10 @@ module "organization_access_group" {
 | `user_names`          | ``                                | A list of IAM User names to associate with the Group                                     | Yes      |
 | `member_account_id`   | ``                                | The ID of the member account to grant access permissions to the users in the Group       | Yes      |
 | `role_name`           | `OrganizationAccountAccessRole`   | The name of the Role in the member account to grant permissions to the users in the Group   | No       |
-| `attributes`          | `[]`                              | Additional attributes (_e.g._ `policy` or `role`)                                        | No       |
+| `attributes`          | `[]`                              | Additional attributes (_e.g._ `1`)                                                       | No       |
 | `tags`                | `{}`                              | Additional tags  (_e.g._ `map("BusinessUnit","XYZ")`                                     | No       |
 | `delimiter`           | `-`                               | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes`              | No       |
+| `require_mfa`         | `false`                           | Require the users to have MFA enabled                                                    | No       |
 
 
 ## Outputs

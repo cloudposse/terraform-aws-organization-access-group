@@ -14,6 +14,12 @@ variable "role_name" {
   description = "The name of the Role in the member account to grant permissions to the users in the Group"
 }
 
+variable "require_mfa" {
+  type        = "string"
+  default     = "false"
+  description = "Require the users to have MFA enabled"
+}
+
 variable "namespace" {
   type        = "string"
   description = "Namespace (e.g. `cp` or `cloudposse`)"
@@ -38,11 +44,11 @@ variable "delimiter" {
 variable "attributes" {
   type        = "list"
   default     = []
-  description = "Additional attributes (e.g. `policy` or `role`)"
+  description = "Additional attributes (e.g. `1`)"
 }
 
 variable "tags" {
   type        = "map"
   default     = {}
-  description = "Additional tags (e.g. map('BusinessUnit`,`XYZ`)"
+  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
 }
