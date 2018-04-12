@@ -21,7 +21,38 @@ resource "aws_iam_group_membership" "default" {
 }
 
 # https://www.terraform.io/docs/providers/aws/d/iam_policy_document.html
-data "aws_iam_policy_document" "default" {
+data "aws_iam_policy_document" "with_mfa" {
+  count = "${var.require_mfa == "true" ? 1 : 0}"
+
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    resources = [
+      "arn:aws:iam::${var.member_account_id}:role/${var.role_name}",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_group_policy" "with_mfa" {
+  count  = "${var.require_mfa == "true" ? 1 : 0}"
+  name   = "${module.label.id}"
+  group  = "${aws_iam_group.default.id}"
+  policy = "${data.aws_iam_policy_document.with_mfa.json}"
+}
+
+data "aws_iam_policy_document" "without_mfa" {
+  count = "${var.require_mfa == "true" ? 0 : 1}"
+
   statement {
     actions = [
       "sts:AssumeRole",
@@ -35,9 +66,9 @@ data "aws_iam_policy_document" "default" {
   }
 }
 
-# https://www.terraform.io/docs/providers/aws/r/iam_group_policy.html
-resource "aws_iam_group_policy" "default" {
+resource "aws_iam_group_policy" "without_mfa" {
+  count  = "${var.require_mfa == "true" ? 0 : 1}"
   name   = "${module.label.id}"
   group  = "${aws_iam_group.default.id}"
-  policy = "${data.aws_iam_policy_document.default.json}"
+  policy = "${data.aws_iam_policy_document.without_mfa.json}"
 }
