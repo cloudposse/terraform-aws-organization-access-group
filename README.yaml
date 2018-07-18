@@ -1,0 +1,97 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-organization-access-group
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-organization-access-group
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-organization-access-group.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-organization-access-group"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-organization-access-group.svg"
+    url: "https://github.com/cloudposse/terraform-aws-organization-access-group/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "terraform-aws-organization-access-role"
+    description: "Terraform module to create an IAM Role to grant permissions to delegated IAM users in the master account to access an invited member account"
+    url: "https://github.com/cloudposse/terraform-aws-organization-access-role"
+
+# Short description of this project
+description: |-
+  Terraform module to create an IAM Group and Policy to grant permissions to delegated IAM users in the Organization's master account to access a member account
+
+  https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html
+
+introduction: |-
+  By default, when you create a member account as part of your Organization, AWS automatically creates `OrganizationAccountAccessRole` in the member account.
+
+  The role grants admin permissions to access the member account to delegated IAM users in the master account.
+
+  In the master account you need to create a Policy to grant permissions to IAM users to assume `OrganizationAccountAccessRole` in the member account.
+
+  This module does the following:
+
+  1. Creates an IAM Group
+  2. Adds the provided IAM users to the Group
+  3. Creates a Policy to grant permissions to the IAM users in the master account to assume `OrganizationAccountAccessRole` in the member account
+  4. Attaches the Policy to the Group
+
+
+  Users who are members of the Group will be able to assume the role and administer the member account by going here:
+
+  (change `XXXXXXXXXXXX` to the ID of the member account)
+
+  ```
+  https://signin.aws.amazon.com/switchrole
+                  ?account=XXXXXXXXXXXX
+                  &roleName=OrganizationAccountAccessRole
+                  &displayName=Dev
+  ```
+
+
+  <br/>
+
+  __NOTE__: Member accounts that you invite to join your Organization (that are not part of your Organization) do not automatically get `OrganizationAccountAccessRole` created.
+  You can use [terraform-aws-organization-access-role](https://github.com/cloudposse/terraform-aws-organization-access-role) module to create `OrganizationAccountAccessRole` role in an invited member account.
+
+  <br/>
+
+# How to use this project
+usage: |-
+  ```hcl
+  module "organization_access_group" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-organization-access-group.git?ref=master"
+    namespace         = "cp"
+    stage             = "dev"
+    name              = "cluster"
+    user_names        = ["User1","User2"]
+    member_account_id = "XXXXXXXXXXXXXX"
+    require_mfa       = "true"
+  }
+  ```
+
+include:
+  - "docs/targets.md"
+  - "docs/terraform.md"
+
+# Contributors to this project
+contributors:
+  - name: "Andriy Knysh"
+    github: "aknysh"
