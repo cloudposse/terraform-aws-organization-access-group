@@ -1,20 +1,20 @@
 output "group_name" {
-  value       = "${aws_iam_group.default.name}"
+  value       = "${join("", aws_iam_group.default.*.name)}"
   description = "The Group's name"
 }
 
 output "group_id" {
-  value       = "${aws_iam_group.default.id}"
+  value       = "${join("", aws_iam_group.default.*.id)}"
   description = "The Group's ID"
 }
 
 output "group_unique_id" {
-  value       = "${aws_iam_group.default.unique_id}"
+  value       = "${join("", aws_iam_group.default.*.unique_id)}"
   description = "Group's unique ID assigned by AWS"
 }
 
 output "group_arn" {
-  value       = "${aws_iam_group.default.arn}"
+  value       = "${join("", aws_iam_group.default.*.arn)}"
   description = "The ARN assigned by AWS for the Group"
 }
 

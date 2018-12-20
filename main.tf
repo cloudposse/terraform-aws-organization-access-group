@@ -8,21 +8,28 @@ module "label" {
   tags       = "${var.tags}"
 }
 
+locals {
+  enabled     = "${var.enabled == "true" ? true : false }"
+  require_mfa = "${var.require_mfa == "true" ? true : false}"
+}
+
 # https://www.terraform.io/docs/providers/aws/r/iam_group.html
 resource "aws_iam_group" "default" {
-  name = "${module.label.id}"
+  count = "${local.enabled ? 1 : 0}"
+  name  = "${module.label.id}"
 }
 
 # https://www.terraform.io/docs/providers/aws/r/iam_group_membership.html
 resource "aws_iam_group_membership" "default" {
+  count = "${local.enabled ? 1 : 0}"
   name  = "${module.label.id}"
-  group = "${aws_iam_group.default.id}"
+  group = "${join("", aws_iam_group.default.*.id)}"
   users = ["${var.user_names}"]
 }
 
 # https://www.terraform.io/docs/providers/aws/d/iam_policy_document.html
 data "aws_iam_policy_document" "with_mfa" {
-  count = "${var.require_mfa == "true" ? 1 : 0}"
+  count = "${local.enabled && local.require_mfa ? 1 : 0}"
 
   statement {
     actions = [
@@ -44,14 +51,14 @@ data "aws_iam_policy_document" "with_mfa" {
 }
 
 resource "aws_iam_group_policy" "with_mfa" {
-  count  = "${var.require_mfa == "true" ? 1 : 0}"
+  count  = "${local.enabled && local.require_mfa ? 1 : 0}"
   name   = "${module.label.id}"
-  group  = "${aws_iam_group.default.id}"
+  group  = "${join("", aws_iam_group.default.*.id)}"
   policy = "${data.aws_iam_policy_document.with_mfa.json}"
 }
 
 data "aws_iam_policy_document" "without_mfa" {
-  count = "${var.require_mfa == "true" ? 0 : 1}"
+  count = "${local.enabled && local.require_mfa == false ? 1 : 0}"
 
   statement {
     actions = [
@@ -67,8 +74,8 @@ data "aws_iam_policy_document" "without_mfa" {
 }
 
 resource "aws_iam_group_policy" "without_mfa" {
-  count  = "${var.require_mfa == "true" ? 0 : 1}"
+  count  = "${local.enabled && local.require_mfa == false ? 1 : 0}"
   name   = "${module.label.id}"
-  group  = "${aws_iam_group.default.id}"
+  group  = "${join("", aws_iam_group.default.*.id)}"
   policy = "${data.aws_iam_policy_document.without_mfa.json}"
 }

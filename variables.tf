@@ -20,6 +20,12 @@ variable "require_mfa" {
   description = "Require the users to have MFA enabled"
 }
 
+variable "enabled" {
+  type        = "string"
+  description = "Whether to create these resources"
+  default     = "true"
+}
+
 variable "namespace" {
   type        = "string"
   description = "Namespace (e.g. `cp` or `cloudposse`)"
