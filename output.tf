@@ -27,3 +27,8 @@ output "policy_id" {
   value       = "${join("", coalescelist(aws_iam_group_policy.without_mfa.*.id, aws_iam_group_policy.with_mfa.*.id))}"
   description = "The policy ID"
 }
+
+output "switchrole_url" {
+  description = "URL to the IAM console to switch to the role"
+  value       = "${format(var.switchrole_url, var.member_account_id, var.role_name, module.label.id)}"
+}

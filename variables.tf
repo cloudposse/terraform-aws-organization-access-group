@@ -41,6 +41,12 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)"
 }
 
+variable "switchrole_url" {
+  type        = "string"
+  description = "URL to the IAM console to switch to a role"
+  default     = "https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s"
+}
+
 variable "delimiter" {
   type        = "string"
   default     = "-"
