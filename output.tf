@@ -30,5 +30,5 @@ output "policy_id" {
 
 output "switchrole_url" {
   description = "URL to the IAM console to switch to the role"
-  value       = "${format(var.switchrole_url, var.member_account_id, var.role_name, module.label.id)}"
+  value       = "${local.enabled ? format(var.switchrole_url, var.member_account_id, var.role_name, module.label.id) : ""}"
 }
