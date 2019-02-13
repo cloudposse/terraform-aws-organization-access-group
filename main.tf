@@ -19,12 +19,11 @@ resource "aws_iam_group" "default" {
   name  = "${module.label.id}"
 }
 
-# https://www.terraform.io/docs/providers/aws/r/iam_group_membership.html
-resource "aws_iam_group_membership" "default" {
-  count = "${local.enabled ? 1 : 0}"
-  name  = "${module.label.id}"
-  group = "${join("", aws_iam_group.default.*.id)}"
-  users = ["${var.user_names}"]
+# https://www.terraform.io/docs/providers/aws/r/iam_user_group_membership.html
+resource "aws_iam_user_group_membership" "default" {
+  count  = "${local.enabled && length(var.user_names) > 0 ? length(var.user_names) : 0}"
+  user   = "${element(var.user_names, count.index)}"
+  groups = ["${join("", aws_iam_group.default.*.id)}"]
 }
 
 # https://www.terraform.io/docs/providers/aws/d/iam_policy_document.html
