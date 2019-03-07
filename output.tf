@@ -28,7 +28,7 @@ output "policy_id" {
   description = "The policy ID"
 }
 
-output "switchrole_url" {
-  description = "URL to the IAM console to switch to the role"
-  value       = "${local.enabled ? format(var.switchrole_url, var.member_account_id, var.role_name, module.label.id) : ""}"
+output "switchrole_urls" {
+  description = "LIst of URL to the IAM console to switch to the roles"
+  value       = ["${formatlist(var.switchrole_url, element(split(":", local.role_arns), 4), element(split(":", local.role_arns), 5), local.role_aliases)}"]
 }

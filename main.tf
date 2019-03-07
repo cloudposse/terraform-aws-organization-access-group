@@ -9,8 +9,10 @@ module "label" {
 }
 
 locals {
-  enabled     = "${var.enabled == "true" ? true : false }"
-  require_mfa = "${var.require_mfa == "true" ? true : false}"
+  enabled      = "${var.enabled == "true" ? true : false }"
+  require_mfa  = "${var.require_mfa == "true" ? true : false}"
+  role_arns    = ["${values(var.role_arns)}"]
+  role_aliases = ["${keys(var.role_arns)}"]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/iam_group.html
@@ -35,7 +37,7 @@ data "aws_iam_policy_document" "with_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = ["${var.role_arns}"]
+    resources = ["${values(var.role_arns)}"]
 
     condition {
       test     = "Bool"
@@ -62,7 +64,7 @@ data "aws_iam_policy_document" "without_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = ["${var.role_arns}"]
+    resources = ["${values(var.role_arns)}"]
 
     effect = "Allow"
   }

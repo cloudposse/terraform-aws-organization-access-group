@@ -4,9 +4,9 @@ variable "user_names" {
 }
 
 variable "role_arns" {
-  type        = "list"
-  default     = []
-  description = "A list of IAM Role ARNs the users in the Group can assume"
+  type        = "map"
+  default     = {}
+  description = "A map of alias -> IAM Role ARNs the users in the Group can assume"
 }
 
 variable "require_mfa" {

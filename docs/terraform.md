@@ -8,7 +8,7 @@
 | name | Name  (e.g. `app` or `cluster`) | string | - | yes |
 | namespace | Namespace (e.g. `cp` or `cloudposse`) | string | - | yes |
 | require_mfa | Require the users to have MFA enabled | string | `false` | no |
-| role_arns | A list of IAM Role ARNs the users in the Group can assume | list | `<list>` | no |
+| role_arns | A map of alias -> IAM Role ARNs the users in the Group can assume | map | `<map>` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`, `infra`) | string | - | yes |
 | switchrole_url | URL to the IAM console to switch to a role | string | `https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
@@ -24,5 +24,5 @@
 | group_unique_id | Group's unique ID assigned by AWS |
 | policy_id | The policy ID |
 | policy_name | The name of the policy |
-| switchrole_url | URL to the IAM console to switch to the role |
+| switchrole_urls | LIst of URL to the IAM console to switch to the roles |
 
