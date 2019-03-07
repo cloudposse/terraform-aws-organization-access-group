@@ -3,15 +3,10 @@ variable "user_names" {
   description = "A list of IAM User names to associate with the Group"
 }
 
-variable "member_account_id" {
-  type        = "string"
-  description = "The ID of the member account to grant access permissions to the users in the Group"
-}
-
-variable "role_name" {
-  type        = "string"
-  default     = "OrganizationAccountAccessRole"
-  description = "The name of the Role in the member account to grant permissions to the users in the Group"
+variable "role_arns" {
+  type        = "list"
+  default     = []
+  description = "A list of IAM Role ARNs the users in the Group can assume"
 }
 
 variable "require_mfa" {

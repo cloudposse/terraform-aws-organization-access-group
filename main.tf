@@ -35,9 +35,7 @@ data "aws_iam_policy_document" "with_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = [
-      "arn:aws:iam::${var.member_account_id}:role/${var.role_name}",
-    ]
+    resources = ["${var.role_arns}"]
 
     condition {
       test     = "Bool"
@@ -64,9 +62,7 @@ data "aws_iam_policy_document" "without_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = [
-      "arn:aws:iam::${var.member_account_id}:role/${var.role_name}",
-    ]
+    resources = ["${var.role_arns}"]
 
     effect = "Allow"
   }

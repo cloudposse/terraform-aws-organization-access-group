@@ -98,7 +98,7 @@ usage: |-
     stage             = "dev"
     name              = "cluster"
     user_names        = ["User1","User2"]
-    member_account_id = "XXXXXXXXXXXXXX"
+    role_arns         = ["arn:aws:iam::XXXXXXXXX:role/OrganizationAccountAccessRole"]
     require_mfa       = "true"
   }
   ```
