@@ -30,5 +30,5 @@ output "policy_id" {
 
 output "switchrole_urls" {
   description = "List of URL to the IAM console to switch to the roles"
-  value       = ["${formatlist(var.switchrole_url, element(split(":", local.role_arns), 4), element(split(":", local.role_arns), 5), local.role_aliases)}"]
+  value       = ["${formatlist(var.switchrole_url, null_resource.role.*.triggers.account_id, null_resource.role.*.triggers.role_name, null_resource.role.*.triggers.alias)}"]
 }

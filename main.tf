@@ -15,6 +15,20 @@ locals {
   role_aliases = ["${keys(var.role_arns)}"]
 }
 
+resource "null_resource" "role" {
+  count = "${length(values(var.role_arns))}"
+
+  triggers = {
+    account_id = "${element(split(":", element(local.role_arns, count.index)), 4)}"
+    role_name  = "${element(split("/", element(split(":", element(local.role_arns, count.index)), 5)), 1)}"
+    alias      = "${element(local.role_aliases, count.index)}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 # https://www.terraform.io/docs/providers/aws/r/iam_group.html
 resource "aws_iam_group" "default" {
   count = "${local.enabled ? 1 : 0}"
@@ -37,7 +51,7 @@ data "aws_iam_policy_document" "with_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = ["${values(var.role_arns)}"]
+    resources = ["${local.role_arns}"]
 
     condition {
       test     = "Bool"
@@ -64,7 +78,7 @@ data "aws_iam_policy_document" "without_mfa" {
       "sts:AssumeRole",
     ]
 
-    resources = ["${values(var.role_arns)}"]
+    resources = ["${local.role_arns}"]
 
     effect = "Allow"
   }
