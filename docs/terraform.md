@@ -24,5 +24,5 @@
 | group_unique_id | Group's unique ID assigned by AWS |
 | policy_id | The policy ID |
 | policy_name | The name of the policy |
-| switchrole_urls | LIst of URL to the IAM console to switch to the roles |
+| switchrole_urls | List of URL to the IAM console to switch to the roles |
 
