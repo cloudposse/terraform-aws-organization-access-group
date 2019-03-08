@@ -121,7 +121,7 @@ Available targets:
 | require_mfa | Require the users to have MFA enabled | string | `false` | no |
 | role_arns | A map of alias -> IAM Role ARNs the users in the Group can assume | map | `<map>` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`, `infra`) | string | - | yes |
-| switchrole_url | URL to the IAM console to switch to a role | string | `https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s` | no |
+| switchrole_url_template | URL to the IAM console to switch to a role | string | `https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 | user_names | A list of IAM User names to associate with the Group | list | - | yes |
 
