@@ -2,7 +2,7 @@
 module "organization_access_group_data" {
   source      = "../"
   enabled     = "true"
-  namespace   = "cp"
+  namespace   = "eg"
   stage       = "prod"
   name        = "chamber"
   user_names  = []
