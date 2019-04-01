@@ -3,15 +3,10 @@ variable "user_names" {
   description = "A list of IAM User names to associate with the Group"
 }
 
-variable "member_account_id" {
-  type        = "string"
-  description = "The ID of the member account to grant access permissions to the users in the Group"
-}
-
-variable "role_name" {
-  type        = "string"
-  default     = "OrganizationAccountAccessRole"
-  description = "The name of the Role in the member account to grant permissions to the users in the Group"
+variable "role_arns" {
+  type        = "map"
+  default     = {}
+  description = "A map of alias -> IAM Role ARNs the users in the Group can assume"
 }
 
 variable "require_mfa" {
@@ -41,9 +36,9 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)"
 }
 
-variable "switchrole_url" {
+variable "switchrole_url_template" {
   type        = "string"
-  description = "URL to the IAM console to switch to a role"
+  description = "URL template for the IAM console to switch to the roles"
   default     = "https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s"
 }
 
