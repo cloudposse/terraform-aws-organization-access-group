@@ -38,7 +38,7 @@ variable "name" {
 
 variable "switchrole_url_template" {
   type        = "string"
-  description = "URL to the IAM console to switch to a role"
+  description = "URL template for the IAM console to switch to the roles"
   default     = "https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s"
 }
 
