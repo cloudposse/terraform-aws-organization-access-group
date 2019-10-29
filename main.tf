@@ -9,25 +9,18 @@ module "label" {
 }
 
 locals {
-  enabled      = var.enabled == "true" ? true : false
-  require_mfa  = var.require_mfa == "true" ? true : false
-  role_arns    = values(var.role_arns)
-  role_aliases = keys(var.role_arns)
+  enabled     = var.enabled == "true" ? true : false
+  require_mfa = var.require_mfa == "true" ? true : false
+  role_arns   = values(var.role_arns)
 }
 
 resource "null_resource" "role" {
-  count = length(values(var.role_arns))
+  for_each = var.role_arns
 
   triggers = {
-    account_id = element(split(":", element(local.role_arns, count.index)), 4)
-    role_name = element(
-      split(
-        "/",
-        element(split(":", element(local.role_arns, count.index)), 5),
-      ),
-      1,
-    )
-    alias = element(local.role_aliases, count.index)
+    account_id = element(split(":", each.value), 4)
+    role_name  = element(split("/", each.value), 1)
+    alias      = each.key
   }
 
   lifecycle {
