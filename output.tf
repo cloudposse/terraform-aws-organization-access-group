@@ -24,6 +24,7 @@ output "policy_name" {
     coalescelist(
       aws_iam_group_policy.without_mfa.*.name,
       aws_iam_group_policy.with_mfa.*.name,
+      [""],
     ),
   )
   description = "The name of the policy"
@@ -35,6 +36,7 @@ output "policy_id" {
     coalescelist(
       aws_iam_group_policy.without_mfa.*.id,
       aws_iam_group_policy.with_mfa.*.id,
+      [""],
     ),
   )
   description = "The policy ID"
