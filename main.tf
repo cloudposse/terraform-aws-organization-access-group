@@ -11,8 +11,8 @@ module "label" {
 locals {
   enabled      = var.enabled == "true" ? true : false
   require_mfa  = var.require_mfa == "true" ? true : false
-  role_arns    = [values(var.role_arns)]
-  role_aliases = [keys(var.role_arns)]
+  role_arns    = values(var.role_arns)
+  role_aliases = keys(var.role_arns)
 }
 
 resource "null_resource" "role" {
@@ -57,15 +57,7 @@ data "aws_iam_policy_document" "with_mfa" {
       "sts:AssumeRole",
     ]
 
-    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-    # force an interpolation expression to be interpreted as a list by wrapping it
-    # in an extra set of list brackets. That form was supported for compatibility in
-    # v0.11, but is no longer supported in Terraform v0.12.
-    #
-    # If the expression in the following list itself returns a list, remove the
-    # brackets to avoid interpretation as a list of lists. If the expression
-    # returns a single list item then leave it as-is and remove this TODO comment.
-    resources = [local.role_arns]
+    resources = local.role_arns
 
     condition {
       test     = "Bool"
@@ -92,15 +84,7 @@ data "aws_iam_policy_document" "without_mfa" {
       "sts:AssumeRole",
     ]
 
-    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-    # force an interpolation expression to be interpreted as a list by wrapping it
-    # in an extra set of list brackets. That form was supported for compatibility in
-    # v0.11, but is no longer supported in Terraform v0.12.
-    #
-    # If the expression in the following list itself returns a list, remove the
-    # brackets to avoid interpretation as a list of lists. If the expression
-    # returns a single list item then leave it as-is and remove this TODO comment.
-    resources = [local.role_arns]
+    resources = local.role_arns
 
     effect = "Allow"
   }
@@ -112,4 +96,3 @@ resource "aws_iam_group_policy" "without_mfa" {
   group  = join("", aws_iam_group.default.*.id)
   policy = data.aws_iam_policy_document.without_mfa[0].json
 }
-
