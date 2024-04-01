@@ -1,0 +1,7 @@
+# Upstream changes from _extends are only recognized when modifications are made to this file in the default branch.
+_extends: .github
+repository:
+  name: terraform-aws-organization-access-group
+  description: Terraform module to create an IAM Group and Policy to grant permissions to delegated IAM users in the Organization's master account to access a member account
+  homepage: https://cloudposse.com/accelerate
+  topics: terraform, terraform-module, iam, group, iam-role, iam-policy, aws, cross-account
